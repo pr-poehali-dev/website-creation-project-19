@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -100,11 +101,13 @@ const characters = [
 ];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'detail'>('grid');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [speechBubble, setSpeechBubble] = useState<{text: string, characterId: number} | null>(null);
+  const [portalAnimation, setPortalAnimation] = useState<number | null>(null);
 
   const playCharacterQuote = (character: typeof characters[0]) => {
     const randomQuote = character.quotes[Math.floor(Math.random() * character.quotes.length)];
@@ -113,6 +116,14 @@ export default function Index() {
     setTimeout(() => {
       setSpeechBubble(null);
     }, 3000);
+  };
+
+  const goToGarage = (characterId: number) => {
+    setPortalAnimation(characterId);
+    
+    setTimeout(() => {
+      navigate(`/garage/${characterId}`);
+    }, 2000);
   };
 
   return (
@@ -239,12 +250,11 @@ export default function Index() {
                     className="w-full bg-cosmic-blue/80 hover:bg-cosmic-blue text-white font-bold transform transition-all duration-200 hover:scale-105"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedCharacter(character.id);
-                      playCharacterQuote(character);
+                      goToGarage(character.id);
                     }}
                   >
                     <Icon name="Rocket" size={16} className="mr-2" />
-                    Выбрать персонажа
+                    Войти в гараж
                   </Button>
                 </div>
               </CardContent>
@@ -494,6 +504,39 @@ export default function Index() {
           </Button>
         </div>
       </div>
+
+      {/* Portal Animation Overlay */}
+      {portalAnimation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-portal-green/90">
+          <div className="relative">
+            <div className="w-64 h-64 border-8 border-portal-green rounded-full animate-spin-slow relative">
+              <div className="absolute inset-4 border-4 border-toxic-green rounded-full animate-spin-reverse">
+                <div className="absolute inset-4 border-2 border-white rounded-full animate-pulse">
+                  <div className="absolute inset-2 bg-gradient-radial from-portal-green/50 to-transparent rounded-full animate-ping"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-white animate-pulse">
+                  <img
+                    src={characters.find(c => c.id === portalAnimation)?.image}
+                    alt="Portal traveler"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-3xl font-bold text-white animate-glitch mb-2">
+                  ОТКРЫВАЮ ПОРТАЛ
+                </div>
+                <div className="text-lg text-white/80 animate-pulse">
+                  {characters.find(c => c.id === portalAnimation)?.name} входит в гараж...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="text-center py-12 mt-16">
