@@ -61,7 +61,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Rick and Morty colors
+				'cosmic-blue': '#00A8CC',
+				'toxic-green': '#47CE4D', 
+				'portal-green': '#97CE4C',
+				'bright-yellow': '#F3D23C',
+				'morty-orange': '#FF6B35',
+				'rick-blue': '#2C3E50',
+				'dimension-purple': '#8B5DFF'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +92,40 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-20px)' }
+				},
+				'portal-spin': {
+					'0%': { transform: 'rotate(0deg) scale(1)' },
+					'50%': { transform: 'rotate(180deg) scale(1.1)' },
+					'100%': { transform: 'rotate(360deg) scale(1)' }
+				},
+				'glitch': {
+					'0%': { transform: 'translate(0)' },
+					'20%': { transform: 'translate(-2px, 2px)' },
+					'40%': { transform: 'translate(-2px, -2px)' },
+					'60%': { transform: 'translate(2px, 2px)' },
+					'80%': { transform: 'translate(2px, -2px)' },
+					'100%': { transform: 'translate(0)' }
+				},
+				'slide-in': {
+					'0%': { transform: 'translateX(-100%)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'portal-spin': 'portal-spin 4s linear infinite',
+				'glitch': 'glitch 0.3s ease-in-out infinite',
+				'slide-in': 'slide-in 0.5s ease-out'
+			},
+			fontFamily: {
+				'rick': ['Creepster', 'cursive'],
+				'cartoon': ['Fredoka One', 'cursive']
 			}
 		}
 	},
