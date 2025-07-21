@@ -11,8 +11,23 @@ const characters = [
     species: 'Human',
     status: 'Alive',
     image: '/img/b96501fe-6f5a-47ca-b230-72c49c3fcfbb.jpg',
+    gallery: [
+      '/img/b96501fe-6f5a-47ca-b230-72c49c3fcfbb.jpg',
+      '/img/b4b54a2e-4910-4790-8059-0a88fc339acf.jpg'
+    ],
     description: 'Безумный ученый с межгалактическими амбициями',
-    color: 'cosmic-blue'
+    fullDescription: 'Рик Санчез - гениальный, но алкоголик-ученый и дедушка Морти Смита. Он является самым умным человеком во вселенной и изобретателем портального пистолета, позволяющего путешествовать между измерениями.',
+    personality: ['Циничный', 'Гениальный', 'Саркастичный', 'Безрассудный'],
+    occupation: 'Безумный ученый',
+    age: '70+',
+    firstAppearance: 'Pilot (Season 1)',
+    color: 'cosmic-blue',
+    facts: [
+      'IQ превышает 300',
+      'Изобрел межизмерительные путешествия',
+      'Самый разыскиваемый преступник в галактике',
+      'Превратил себя в огурец'
+    ]
   },
   {
     id: 2,
@@ -21,8 +36,23 @@ const characters = [
     species: 'Human', 
     status: 'Alive',
     image: '/img/7a1d6321-2681-4dd2-a922-966836190671.jpg',
+    gallery: [
+      '/img/7a1d6321-2681-4dd2-a922-966836190671.jpg',
+      '/img/1c36e1d5-4998-4a56-ab20-489b2b32d03f.jpg'
+    ],
     description: 'Нервный внук, втянутый в безумные приключения',
-    color: 'bright-yellow'
+    fullDescription: 'Морти Смит - 14-летний внук Рика, который неохотно сопровождает его в опасных межизмерительных приключениях. Несмотря на свою неуверенность, он часто становится голосом морали.',
+    personality: ['Нервный', 'Добрый', 'Неуверенный', 'Моральный'],
+    occupation: 'Школьник',
+    age: '14',
+    firstAppearance: 'Pilot (Season 1)',
+    color: 'bright-yellow',
+    facts: [
+      'Учится в школе Гарри Хэрпендейла',
+      'Влюблен в Джессику',
+      'Имеет травматический опыт приключений',
+      'Временно был гением в одной из серий'
+    ]
   },
   {
     id: 3,
@@ -31,14 +61,31 @@ const characters = [
     species: 'Human',
     status: 'Alive', 
     image: '/img/b635edc9-b2b8-49a5-a0f0-bf0d8c8ce125.jpg',
+    gallery: [
+      '/img/b635edc9-b2b8-49a5-a0f0-bf0d8c8ce125.jpg',
+      '/img/958f48fb-9e5d-4411-84ea-35a2658b6576.jpg'
+    ],
     description: 'Умная и саркастичная старшая сестра',
-    color: 'morty-orange'
+    fullDescription: 'Саммер Смит - 17-летняя старшая сестра Морти. Поначалу не участвовала в приключениях деда, но позже стала активным участником, проявив смекалку и решительность.',
+    personality: ['Саркастичная', 'Умная', 'Решительная', 'Популярная'],
+    occupation: 'Школьница',
+    age: '17',
+    firstAppearance: 'Pilot (Season 1)',
+    color: 'morty-orange',
+    facts: [
+      'Была случайностью (нежелательной беременностью)',
+      'Спасла семью от кронербергов',
+      'Работала в магазине проклятий',
+      'Более жестокая чем Морти в приключениях'
+    ]
   }
 ];
 
 export default function Index() {
   const [selectedCharacter, setSelectedCharacter] = useState<number | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'detail'>('grid');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rick-blue via-cosmic-blue to-dimension-purple overflow-hidden relative">
@@ -173,8 +220,175 @@ export default function Index() {
           ))}
         </div>
 
+        {/* Character Detail View */}
+        {selectedCharacter && viewMode === 'detail' && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 overflow-y-auto">
+            <div className="min-h-screen py-8">
+              <div className="max-w-6xl mx-auto px-4">
+                {(() => {
+                  const character = characters.find(c => c.id === selectedCharacter);
+                  if (!character) return null;
+                  
+                  return (
+                    <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border-2 border-white/20 rounded-3xl overflow-hidden animate-slide-in">
+                      {/* Header */}
+                      <div className="relative p-8 bg-gradient-to-r from-cosmic-blue/20 to-dimension-purple/20">
+                        <Button
+                          className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white"
+                          onClick={() => {
+                            setViewMode('grid');
+                            setSelectedCharacter(null);
+                          }}
+                        >
+                          <Icon name="X" size={20} />
+                        </Button>
+                        
+                        <div className="flex flex-col md:flex-row gap-8 items-center">
+                          <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-portal-green animate-float">
+                            <img
+                              src={character.image}
+                              alt={character.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          
+                          <div className="text-center md:text-left">
+                            <h1 className="text-5xl font-bold text-white mb-4" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                              {character.name}
+                            </h1>
+                            <p className="text-2xl text-portal-green font-semibold mb-2">
+                              📍 {character.dimension}
+                            </p>
+                            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                              <span className="px-4 py-2 bg-portal-green/20 border border-portal-green rounded-full text-portal-green font-bold">
+                                {character.species}
+                              </span>
+                              <span className="px-4 py-2 bg-bright-yellow/20 border border-bright-yellow rounded-full text-bright-yellow font-bold">
+                                {character.status}
+                              </span>
+                              <span className="px-4 py-2 bg-morty-orange/20 border border-morty-orange rounded-full text-morty-orange font-bold">
+                                {character.age} лет
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                          {/* Left Column - Description & Facts */}
+                          <div className="lg:col-span-2 space-y-8">
+                            {/* Description */}
+                            <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/20">
+                              <CardContent className="p-6">
+                                <h3 className="text-2xl font-bold text-white mb-4 flex items-center">
+                                  <Icon name="User" size={24} className="mr-2 text-portal-green" />
+                                  Описание
+                                </h3>
+                                <p className="text-white/90 text-lg leading-relaxed">
+                                  {character.fullDescription}
+                                </p>
+                              </CardContent>
+                            </Card>
+
+                            {/* Facts */}
+                            <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/20">
+                              <CardContent className="p-6">
+                                <h3 className="text-2xl font-bold text-white mb-4 flex items-center">
+                                  <Icon name="Zap" size={24} className="mr-2 text-bright-yellow" />
+                                  Интересные факты
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {character.facts.map((fact, index) => (
+                                    <div key={index} className="flex items-start gap-3 p-4 bg-white/5 rounded-lg border border-white/10">
+                                      <div className="w-2 h-2 bg-portal-green rounded-full mt-2 flex-shrink-0"></div>
+                                      <span className="text-white/90">{fact}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+
+                          {/* Right Column - Details & Gallery */}
+                          <div className="space-y-8">
+                            {/* Character Stats */}
+                            <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/20">
+                              <CardContent className="p-6">
+                                <h3 className="text-xl font-bold text-white mb-4">Характеристики</h3>
+                                <div className="space-y-4">
+                                  <div>
+                                    <span className="text-portal-green font-semibold">Профессия:</span>
+                                    <span className="text-white/90 ml-2">{character.occupation}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-portal-green font-semibold">Первое появление:</span>
+                                    <span className="text-white/90 ml-2">{character.firstAppearance}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-portal-green font-semibold">Личность:</span>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                      {character.personality.map((trait, index) => (
+                                        <span key={index} className="px-3 py-1 bg-dimension-purple/20 border border-dimension-purple rounded-full text-dimension-purple text-sm">
+                                          {trait}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* Photo Gallery */}
+                            <Card className="bg-gradient-to-br from-white/5 to-white/10 border-white/20">
+                              <CardContent className="p-6">
+                                <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                                  <Icon name="Images" size={20} className="mr-2 text-morty-orange" />
+                                  Галерея
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                  {character.gallery.map((image, index) => (
+                                    <div
+                                      key={index}
+                                      className="aspect-square rounded-lg overflow-hidden border-2 border-white/20 cursor-pointer transition-all hover:scale-105 hover:border-portal-green"
+                                      onClick={() => setSelectedImage(image)}
+                                    >
+                                      <img
+                                        src={image}
+                                        alt={`${character.name} ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Image Modal */}
+        {selectedImage && (
+          <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-60 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
+            <div className="max-w-4xl max-h-full">
+              <img
+                src={selectedImage}
+                alt="Enlarged view"
+                className="max-w-full max-h-full object-contain rounded-lg"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Selected Character Panel */}
-        {selectedCharacter && (
+        {selectedCharacter && viewMode === 'grid' && (
           <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 animate-slide-in">
             <Card className="bg-gradient-to-r from-portal-green/90 to-toxic-green/90 backdrop-blur-md border-2 border-white/30">
               <CardContent className="p-4 flex items-center gap-4">
@@ -191,13 +405,22 @@ export default function Index() {
                   </p>
                   <p className="text-sm opacity-90">Готов к приключениям!</p>
                 </div>
-                <Button 
-                  size="sm" 
-                  className="bg-white/20 hover:bg-white/30 text-white"
-                  onClick={() => setSelectedCharacter(null)}
-                >
-                  <Icon name="X" size={16} />
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    size="sm" 
+                    className="bg-white/20 hover:bg-white/30 text-white"
+                    onClick={() => setViewMode('detail')}
+                  >
+                    <Icon name="Eye" size={16} />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    className="bg-white/20 hover:bg-white/30 text-white"
+                    onClick={() => setSelectedCharacter(null)}
+                  >
+                    <Icon name="X" size={16} />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
