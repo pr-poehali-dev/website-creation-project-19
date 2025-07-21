@@ -22,6 +22,12 @@ const characters = [
     age: '70+',
     firstAppearance: 'Pilot (Season 1)',
     color: 'cosmic-blue',
+    quotes: [
+      'Поехали, Морти! Авантюра ждёт!',
+      'Наука, Морти! Это всё, что нам нужно!',
+      'Я самый умный человек в мультивселенной!',
+      'Огурцы - это серьёзно!'
+    ],
     facts: [
       'IQ превышает 300',
       'Изобрел межизмерительные путешествия',
@@ -47,6 +53,12 @@ const characters = [
     age: '14',
     firstAppearance: 'Pilot (Season 1)',
     color: 'bright-yellow',
+    quotes: [
+      'Обоже, Рик, я не знаю...',
+      'Аах! Это небезопасно, Рик!',
+      'Мне страшно... Может, лучше не надо?',
+      'Почему я всегда должен спасать мир?'
+    ],
     facts: [
       'Учится в школе Гарри Хэрпендейла',
       'Влюблен в Джессику',
@@ -72,6 +84,12 @@ const characters = [
     age: '17',
     firstAppearance: 'Pilot (Season 1)',
     color: 'morty-orange',
+    quotes: [
+      'Окей, это становится интересно...',
+      'Я могу справиться сама!',
+      'Серьёзно? Мы опять это делаем?',
+      'Морти, тебе нужно взрослеть!'
+    ],
     facts: [
       'Была случайностью (нежелательной беременностью)',
       'Спасла семью от кронербергов',
@@ -86,6 +104,16 @@ export default function Index() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'detail'>('grid');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [speechBubble, setSpeechBubble] = useState<{text: string, characterId: number} | null>(null);
+
+  const playCharacterQuote = (character: typeof characters[0]) => {
+    const randomQuote = character.quotes[Math.floor(Math.random() * character.quotes.length)];
+    setSpeechBubble({ text: randomQuote, characterId: character.id });
+    
+    setTimeout(() => {
+      setSpeechBubble(null);
+    }, 3000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rick-blue via-cosmic-blue to-dimension-purple overflow-hidden relative">
@@ -161,7 +189,10 @@ export default function Index() {
               style={{ animationDelay: `${index * 0.2}s` }}
               onMouseEnter={() => setHoveredCard(character.id)}
               onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => setSelectedCharacter(character.id)}
+              onClick={() => {
+                setSelectedCharacter(character.id);
+                playCharacterQuote(character);
+              }}
             >
               <CardContent className="p-6">
                 {/* Character Image */}
@@ -209,6 +240,7 @@ export default function Index() {
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedCharacter(character.id);
+                      playCharacterQuote(character);
                     }}
                   >
                     <Icon name="Rocket" size={16} className="mr-2" />
@@ -423,6 +455,32 @@ export default function Index() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        )}
+
+        {/* Speech Bubble */}
+        {speechBubble && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-60 animate-scale-in">
+            <div className="relative bg-gradient-to-br from-white to-white/90 backdrop-blur-md border-4 border-portal-green rounded-3xl px-8 py-6 max-w-md mx-4 shadow-2xl">
+              {/* Speech bubble tail */}
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-portal-green"></div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden border-4 border-portal-green animate-pulse">
+                  <img
+                    src={characters.find(c => c.id === speechBubble.characterId)?.image}
+                    alt="Speaking character"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-xl font-bold text-rick-blue mb-2 animate-glitch" style={{ textShadow: '1px 1px 0px #47CE4D' }}>
+                  {characters.find(c => c.id === speechBubble.characterId)?.name}
+                </p>
+                <p className="text-lg text-rick-blue font-semibold leading-relaxed">
+                  "{speechBubble.text}"
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
